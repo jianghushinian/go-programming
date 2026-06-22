@@ -1,0 +1,22 @@
+kubeconfig: /Users/jianghushinian/.kube/config
+
+mysql:
+  host: 127.0.0.1:3306
+  username: root
+  password: cronx
+  database: cronx
+  max-idle-connections: 100
+  max-open-connections: 100
+  max-connection-life-time: 10s
+  log-level: 4
+
+redis:
+  addr: 127.0.0.1:6379
+  # username: cronx
+  password: cronx
+  database: 0
+
+log:
+  level: debug
+  format: text
+  output: [ "stdout" ]

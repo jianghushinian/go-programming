@@ -1,0 +1,4 @@
+app:
+    mode: prod
+    name: myapp
+    port: 8080

@@ -28,5 +28,13 @@ go.work.sum
 .env
 
 # Editor/IDE
-# .idea/
-# .vscode/
+.idea/
+.vscode/
+
+# binary file
+bin/
+ch8/cobra/myapp/myap
+ch8/cronx/bin/
+
+# mac file
+.DS_Store

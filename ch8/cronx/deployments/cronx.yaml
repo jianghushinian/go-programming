@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cronx
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cronx-sa
+  namespace: cronx
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cronx-role
+  namespace: cronx
+rules:
+  - apiGroups: [ "batch" ]
+    resources: [ "jobs" ]
+    verbs: [ "get", "list", "watch", "create" ]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cronx-rb
+  namespace: cronx
+subjects:
+  - kind: ServiceAccount
+    name: cronx-sa
+roleRef:
+  kind: Role
+  name: cronx-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cronx-config
+  namespace: cronx
+data:
+  config.yaml: |
+    mysql:
+      host: "mysql:3306"
+      username: root
+      password: cronx
+      database: cronx
+      max-idle-connections: 100
+      max-open-connections: 100
+      max-connection-life-time: 10s
+      log-level: 4
+    redis:
+      addr: "redis:6379"
+      # username: cronx
+      password: cronx
+      database: 0
+    log:
+      level: debug
+      format: json
+      output: [ "stdout" ]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cronx
+  namespace: cronx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: cronx
+  template:
+    metadata:
+      labels:
+        app: cronx
+    spec:
+      serviceAccountName: cronx-sa
+      containers:
+        - name: cronx
+          image: cronx/cronx:v0.0.1
+          imagePullPolicy: IfNotPresent
+          args: [ "--config=/etc/cronx/config.yaml" ]
+          volumeMounts:
+            - name: config
+              mountPath: /etc/cronx
+      volumes:
+        - name: config
+          configMap:
+            name: cronx-config

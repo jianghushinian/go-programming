@@ -1,0 +1,41 @@
+services:
+  mariadb:
+    image: mariadb:11.4
+    container_name: cronx-mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: 'cronx'  # 设置 MariaDB 的 root 密码
+    volumes:
+      - cronx_mariadb_data:/var/lib/mysql  # 数据库数据持久化存储
+    ports:
+      - "3306:3306"  # 暴露 MariaDB 端口
+    restart: unless-stopped  # 确保容器失败时重新启动
+    networks:
+      - cronx  # 加入 cronx 网络
+
+  redis:
+    image: redis:7
+    container_name: cronx-redis
+    command: [
+      "redis-server",
+      "--appendonly", "yes",
+      "--requirepass", "cronx"
+    ]
+    ports:
+      - "6379:6379"
+    volumes:
+      - cronx_redis_data:/data
+    restart: unless-stopped
+    networks:
+      - cronx
+
+# 定义持久化存储的卷
+volumes:
+  cronx_mariadb_data:
+    driver: local
+  cronx_redis_data:
+    driver: local
+
+# 定义网络
+networks:
+  cronx:
+    driver: bridge
