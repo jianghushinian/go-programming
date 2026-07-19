@@ -24,15 +24,13 @@ func Bar() error {
 */
 
 // func main() {
-// 	err := Bar()
-// 	if err != nil {
+// 	if err := Bar(); err != nil {
 // 		fmt.Printf("err: %s\n", err)
 // 	}
 // }
 
 // func main() {
-// 	err := Bar()
-// 	if err != nil {
+// 	if err := Bar(); err != nil {
 // 		if errors.Unwrap(err) == io.EOF {
 // 			fmt.Println("EOF err")
 // 			return
@@ -43,8 +41,7 @@ func Bar() error {
 // }
 
 // func main() {
-// 	err := Bar()
-// 	if err != nil {
+// 	if err := Bar(); err != nil {
 // 		if errors.Is(err, io.EOF) {
 // 			fmt.Println("EOF err")
 // 			return
@@ -79,8 +76,7 @@ func Bar() error {
 }
 
 func main() {
-	err := Bar()
-	if err != nil {
+	if err := Bar(); err != nil {
 		var e *MyError
 		if errors.As(err, &e) {
 			fmt.Printf("EOF err: %s\n", e)

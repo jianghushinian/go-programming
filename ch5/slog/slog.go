@@ -77,6 +77,20 @@ func main() {
 
 	logger.LogAttrs(context.Background(), LevelTrace, "trace message", slog.String("name", "江湖十年"))
 	logger.LogAttrs(context.Background(), LevelFatal, "fatal message", slog.String("name", "江湖十年"))
+
+	// 输出至多个 Handler
+	file, _ := os.OpenFile("app.jsonl", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+	multiHandler := slog.NewMultiHandler(
+		slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+			Level: slog.LevelDebug,
+		}),
+		slog.NewJSONHandler(file, &slog.HandlerOptions{
+			Level: slog.LevelInfo,
+		}),
+	)
+	multiLogger := slog.New(multiHandler)
+	multiLogger.Debug("Text Handler log", "request_id", "req-12345")
+	multiLogger.Info("Multi Handler log", "user_id", "jianghushinian")
 }
 
 type User struct {

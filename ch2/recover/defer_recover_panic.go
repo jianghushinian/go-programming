@@ -7,14 +7,15 @@ import "fmt"
 
 func f() {
 	defer func() {
+		panic("woah 1")
+	}()
+
+	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("recover:", r)
 		}
 	}()
 
-	defer func() {
-		panic("woah 1")
-	}()
 	panic("woah 2")
 }
 
