@@ -24,7 +24,7 @@ func (m *MiniRedisMutex) Lock(ctx context.Context, value string) (bool, error) {
 	return m.conn.SetNX(ctx, m.name, value, m.expiry).Result()
 }
 
-// 释放锁的 lua 脚本，保证并发安全
+// 释放锁的 Lua 脚本，保证并发安全
 var deleteScript = `
     local val = redis.call("GET", KEYS[1])
     if val == ARGV[1] then
@@ -38,7 +38,7 @@ var deleteScript = `
 
 // Unlock 释放锁
 func (m *MiniRedisMutex) Unlock(ctx context.Context, value string) (bool, error) {
-	// 执行 lua 脚本，Redis 会保证其并发安全
+	// 执行 Lua 脚本，Redis 会保证其并发安全
 	status, err := m.conn.Eval(ctx, deleteScript, []string{m.name}, value).Result()
 	if err != nil {
 		return false, err

@@ -28,7 +28,7 @@ func TestContextAfterFuncWithSynctest(t *testing.T) {
 		// 等待气泡内所有 goroutine 进入持久阻塞
 		synctest.Wait()
 		if !afterFuncCalled { // 验证在 ctx 取消后 AfterFunc 被调用
-			t.Fatalf("before context is canceled: AfterFunc not called")
+			t.Fatalf("after context is canceled: AfterFunc not called")
 		}
 	})
 }

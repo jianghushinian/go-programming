@@ -176,7 +176,7 @@ func Transaction(db *sql.DB, id int64, name string) error {
 	if err != nil {
 		// 回滚事务
 		if rollbackErr := tx.Rollback(); rollbackErr != nil {
-			log.Fatalf("update failed: %v, unable to rollback: %v\n", err, rollbackErr)
+			log.Printf("update failed: %v, unable to rollback: %v\n", err, rollbackErr)
 		}
 		return err
 	}

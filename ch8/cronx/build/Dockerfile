@@ -1,5 +1,5 @@
 # Build the cronx binary
-FROM golang:1.25 AS builder
+FROM golang:1.27 AS builder
 
 ARG TARGETOS
 ARG TARGETARCH

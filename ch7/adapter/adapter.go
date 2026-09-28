@@ -17,7 +17,7 @@ type Logger interface {
 
 // ZapAdapter zap 日志库适配器
 type ZapAdapter struct {
-	logger *zap.Logger // 嵌入被适配对象
+	logger *zap.Logger // 持有被适配对象
 }
 
 func NewZapAdapter(logger *zap.Logger) *ZapAdapter {

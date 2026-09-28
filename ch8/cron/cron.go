@@ -16,9 +16,9 @@ func main() {
 	c.AddFunc("*/5 * * * * *", func() { job(5) })
 
 	c.Start()      // 启动计划任务
-	defer c.Stop() // 关闭着计划任务，这不会关闭已经在执行中的任务
+	defer c.Stop() // 关闭计划任务，这不会关闭已经在执行中的任务
 
-	select {} // 查询语句，保持程序运行
+	select {} // 阻塞语句，保持程序运行
 }
 
 func job(duration int) {

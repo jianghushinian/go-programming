@@ -29,11 +29,11 @@ func main() {
 		panic(err)
 	}
 
-	// 启动自动续约
+	// 启动自动续期
 	stopCh := make(chan struct{})
 	go AutoRefresh(ctx, mutex, stopCh)
 	time.Sleep(20 * time.Second) // 模拟耗时业务
-	// 停止续约
+	// 停止续期
 	close(stopCh)
 
 	if _, err := mutex.UnlockContext(ctx); err != nil {
@@ -42,12 +42,12 @@ func main() {
 }
 
 func AutoRefresh(ctx context.Context, mutex *redsync.Mutex, stopCh <-chan struct{}) {
-	ticker := time.NewTicker(5 * time.Second) // 每隔 5s 续约一次
+	ticker := time.NewTicker(5 * time.Second) // 每隔 5s 续期一次
 	defer ticker.Stop()
 	for {
 		select {
 		case <-ticker.C:
-			// 续约，延长锁的过期时间
+			// 续期，延长锁的过期时间
 			if ok, err := mutex.ExtendContext(ctx); !ok || err != nil {
 				slog.Error("Failed to extend mutex", "err", err, "status", ok)
 			}
