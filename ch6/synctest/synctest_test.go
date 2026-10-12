@@ -27,3 +27,32 @@ func TestTimeWithSynctest(t *testing.T) {
 		t.Log(time.Since(start)) // 每次输出都是 "2s"
 	})
 }
+
+func TestSleepSameDuration(t *testing.T) {
+	synctest.Test(t, func(t *testing.T) {
+		var done bool
+		go func() {
+			time.Sleep(1 * time.Second)
+			done = true
+		}()
+		time.Sleep(1 * time.Second) // 与被测代码等待相同的时长
+		if !done {
+			t.Fatal("done is false")
+		}
+	})
+}
+
+func TestSynctestSleep(t *testing.T) {
+	synctest.Test(t, func(t *testing.T) {
+		var done bool
+		go func() {
+			time.Sleep(1 * time.Second)
+			done = true
+		}()
+		// 等价于 time.Sleep(1 * time.Second) + synctest.Wait()
+		synctest.Sleep(1 * time.Second)
+		if !done {
+			t.Fatal("done is false")
+		}
+	})
+}

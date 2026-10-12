@@ -34,7 +34,8 @@ func TestUserClient(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			server := httptest.NewServer(
+			server := httptest.NewTestServer(
+				t,
 				http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					w.WriteHeader(tt.status)
 					if tt.response != "" {
@@ -42,9 +43,9 @@ func TestUserClient(t *testing.T) {
 					}
 				}),
 			)
-			defer server.Close()
 
-			client := NewUserClient(server.URL)
+			httpClient := server.Client()
+			client := NewUserClient(server.URL, httpClient)
 			user, err := client.GetUser(tt.user.ID)
 
 			if tt.wantErr {

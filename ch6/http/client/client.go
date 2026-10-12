@@ -15,17 +15,21 @@ type User struct {
 // UserClient 用户客户端
 type UserClient struct {
 	BaseURL string
+	Client  *http.Client
 }
 
 // NewUserClient 创建用户客户端实例
-func NewUserClient(baseURL string) *UserClient {
-	return &UserClient{BaseURL: baseURL}
+func NewUserClient(baseURL string, client *http.Client) *UserClient {
+	if client == nil {
+		client = http.DefaultClient
+	}
+	return &UserClient{BaseURL: baseURL, Client: client}
 }
 
 // GetUser 从 HTTP 服务获取用户信息
 func (c *UserClient) GetUser(userID int) (*User, error) {
 	url := fmt.Sprintf("%s/users/%d", c.BaseURL, userID)
-	resp, err := http.Get(url)
+	resp, err := c.Client.Get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +47,7 @@ func (c *UserClient) GetUser(userID int) (*User, error) {
 }
 
 func main() {
-	client := &UserClient{BaseURL: "http://localhost:8080"}
+	client := NewUserClient("http://localhost:8080", nil)
 	user, err := client.GetUser(1)
 	if err != nil {
 		fmt.Printf("GetUser error: %v\n", err)
